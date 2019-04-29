@@ -88,9 +88,9 @@ int main(int argc, char *argv[])
   double axis3 = axis3_min;
 
   Region *region = new E42Region();
-  std::cout << "# axis1" << std::endl;
-  std::cout << "# axis2" << std::endl;
-  std::cout << "# axis3" << std::endl;
+  std::cout << "#\taxis1" << std::endl;
+  std::cout << "#\taxis2" << std::endl;
+  std::cout << "#\taxis3" << std::endl;
 
   while(axis3 <= axis3_max){
     while(axis2 <= axis2_max){
@@ -102,12 +102,12 @@ int main(int argc, char *argv[])
         }
         axis1 += daxis1;
       }
-      std::cout << "# axis1" << std::endl;
+      std::cout << "#\taxis1" << std::endl;
 
       axis1 = axis1_min;
       axis2 += daxis2;
     }
-    std::cout << "# axis2" << std::endl;
+    std::cout << "#\taxis2" << std::endl;
 
     axis2 = axis2_min;
     axis3 += daxis3;
