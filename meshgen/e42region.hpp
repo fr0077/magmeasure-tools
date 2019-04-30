@@ -1,16 +1,12 @@
+#include <cmath>
 #include "region.hpp"
 
 class E42Region : public Region
 {
-  public:
-    //未実装。常にTrueを返す
-    bool isFine(double, double, double);
+  bool isIncluded(double x, double y, double z){
+    double r = sqrt(pow(x,2) + pow(y,2));
+    return r <= 300 && -300 <= z && z <= 300;
+  }
 
-    //x,y,z(測定点の座標。アクチュエーター座標ではない）を受け取り、それが測定領域に含まれるならtrue, 含まれないならfalseを返す
-    bool isIncluded(double,double,double);
-
-    //未実装。常に2を返す
-    int fineFactor();
-
-    ~E42Region();
+  ~E42Region(){}
 };
