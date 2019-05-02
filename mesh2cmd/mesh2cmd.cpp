@@ -27,11 +27,11 @@ int main(int argc, char *argv[])
     boost::split(tokens, line, boost::is_any_of("\t"));
 
     if(tokens.at(0) == "#"){
-      if(tokens.at(1) == "axis1")
+      if(tokens.at(1) == "1")
         oldAxis1 = 0;
-      else if(tokens.at(1) == "axis2"){
+      else if(tokens.at(1) == "2"){
         oldAxis2 = 0;
-      }else if(tokens.at(1) == "axis3"){
+      }else if(tokens.at(1) == "3"){
         oldAxis3 = 0;
       }else{
         std::cerr << "Bad format" << std::endl;
