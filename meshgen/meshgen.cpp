@@ -94,22 +94,30 @@ int main(int argc, char *argv[])
   dy = pt.get<double>(session_name + ".deltay");
   dz = pt.get<double>(session_name + ".deltaz");
 
-  std::string actuator_sign_x = pt.get<std::string>(session_name + ".actuator_sign_x");
-  std::string actuator_sign_y = pt.get<std::string>(session_name + ".actuator_sign_y");
-  std::string actuator_sign_z = pt.get<std::string>(session_name + ".actuator_sign_z");
-  std::string axis1_sign;
-  std::string axis2_sign;
-  std::string axis3_sign;
+  int actuator_sign_x = pt.get<int>(session_name + ".actuator_sign_x");
+  int actuator_sign_y = pt.get<int>(session_name + ".actuator_sign_y");
+  int actuator_sign_z = pt.get<int>(session_name + ".actuator_sign_z");
+  int axis1_sign;
+  int axis2_sign;
+  int axis3_sign;
 
-  if(actuator_sign_x == "-"){
+  int scan_order_x = pt.get<int>(session_name + ".scan_order_x");
+  int scan_order_y = pt.get<int>(session_name + ".scan_order_y");
+  int scan_order_z = pt.get<int>(session_name + ".scan_order_z");
+
+  int sign_x = actuator_sign_x * scan_order_x;
+  int sign_y = actuator_sign_y * scan_order_y;
+  int sign_z = actuator_sign_z * scan_order_z;
+
+  if(sign_x == -1 ){
     x = xmax;
     dx = -dx;
   }
-  if(actuator_sign_y == "-"){
+  if(sign_y == -1 ){
     y = ymax;
     dy = -dy;
   }
-  if(actuator_sign_z == "-"){
+  if(sign_z == -1 ){
     z = zmax;
     dz = -dz;
   }
@@ -127,9 +135,9 @@ int main(int argc, char *argv[])
     daxis1 = dx;
     daxis2 = dy;
     daxis3 = dz;
-    axis1_sign = actuator_sign_x;
-    axis2_sign = actuator_sign_y;
-    axis3_sign = actuator_sign_z;
+    axis1_sign = sign_x;
+    axis2_sign = sign_y;
+    axis3_sign = sign_z;
     stage_axis1_zero = stage_x_zero;
     stage_axis2_zero = stage_y_zero;
     stage_axis3_zero = stage_z_zero;
@@ -146,9 +154,9 @@ int main(int argc, char *argv[])
     daxis1 = dx;
     daxis2 = dz;
     daxis3 = dy;
-    axis1_sign = actuator_sign_x;
-    axis2_sign = actuator_sign_z;
-    axis3_sign = actuator_sign_y;
+    axis1_sign = sign_x;
+    axis2_sign = sign_z;
+    axis3_sign = sign_y;
     stage_axis1_zero = stage_x_zero;
     stage_axis2_zero = stage_z_zero;
     stage_axis3_zero = stage_y_zero;
@@ -165,9 +173,9 @@ int main(int argc, char *argv[])
     daxis1 = dy;
     daxis2 = dx;
     daxis3 = dz;
-    axis1_sign = actuator_sign_y;
-    axis2_sign = actuator_sign_x;
-    axis3_sign = actuator_sign_z;
+    axis1_sign = sign_y;
+    axis2_sign = sign_x;
+    axis3_sign = sign_z;
     stage_axis1_zero = stage_y_zero;
     stage_axis2_zero = stage_x_zero;
     stage_axis3_zero = stage_z_zero;
@@ -184,9 +192,9 @@ int main(int argc, char *argv[])
     daxis1 = dy;
     daxis2 = dz;
     daxis3 = dx;
-    axis1_sign = actuator_sign_y;
-    axis2_sign = actuator_sign_z;
-    axis3_sign = actuator_sign_x;
+    axis1_sign = sign_y;
+    axis2_sign = sign_z;
+    axis3_sign = sign_x;
     stage_axis1_zero = stage_y_zero;
     stage_axis2_zero = stage_z_zero;
     stage_axis3_zero = stage_x_zero;
@@ -203,9 +211,9 @@ int main(int argc, char *argv[])
     daxis1 = dz;
     daxis2 = dx;
     daxis3 = dy;
-    axis1_sign = actuator_sign_z;
-    axis2_sign = actuator_sign_x;
-    axis3_sign = actuator_sign_y;
+    axis1_sign = sign_z;
+    axis2_sign = sign_x;
+    axis3_sign = sign_y;
     stage_axis1_zero = stage_z_zero;
     stage_axis2_zero = stage_x_zero;
     stage_axis3_zero = stage_y_zero;
@@ -218,13 +226,13 @@ int main(int argc, char *argv[])
     axis3_min = xmin;
     axis1_max = zmax;
     axis2_max = ymax;
-    axis3_max = zmax;
+    axis3_max = xmax;
     daxis1 = dz;
     daxis2 = dy;
     daxis3 = dx;
-    axis1_sign = actuator_sign_z;
-    axis2_sign = actuator_sign_y;
-    axis3_sign = actuator_sign_x;
+    axis1_sign = sign_z;
+    axis2_sign = sign_y;
+    axis3_sign = sign_x;
     stage_axis1_zero = stage_z_zero;
     stage_axis2_zero = stage_y_zero;
     stage_axis3_zero = stage_x_zero;
@@ -239,15 +247,16 @@ int main(int argc, char *argv[])
   }
 
   Region *region = new FMRegion();
+  std::cout << "#\t3" << std::endl;
   std::cout << "#\t1" << std::endl;
   std::cout << "#\t2" << std::endl;
-  std::cout << "#\t3" << std::endl;
 
   while(axis3_min <= axis3 && axis3 <= axis3_max){
     while(axis2_min <= axis2 && axis2 <= axis2_max){
       while(axis1_min <= axis1 && axis1 <= axis1_max){
         double tempx, tempy, tempz;
         getXYZ(&tempx, &tempy, &tempz, axis1, axis2, axis3, axisOrder);
+
         if(region->isIncluded(tempx,tempy,tempz)){
           if(flag_stage_coordinate == 2){
             double act_3, act_2, act_1;
@@ -255,12 +264,9 @@ int main(int argc, char *argv[])
             act_2 = axis2 - stage_axis2_zero;
             act_3 = axis3 - stage_axis3_zero;
 
-            if(axis1_sign == "-")
-              act_1 = -act_1;
-            if(axis2_sign == "-")
-              act_2 = -act_2;
-            if(axis3_sign == "-")
-              act_3 = -act_3;
+            act_1 = abs(act_1);
+            act_2 = abs(act_2);
+            act_3 = abs(act_3);
 
             std::cout << act_1 << '\t' << act_2 << '\t' << act_3 << std::endl;
           }else{
@@ -271,7 +277,7 @@ int main(int argc, char *argv[])
       }
       std::cout << "#\t1" << std::endl;
 
-      if(axis1_sign == "+")
+      if(axis1_sign == +1)
         axis1 = axis1_min;
       else
         axis1 = axis1_max;
@@ -280,7 +286,7 @@ int main(int argc, char *argv[])
     }
     std::cout << "#\t2" << std::endl;
 
-    if(axis2_sign == "+")
+    if(axis2_sign == +1)
       axis2 = axis2_min;
     else
       axis2 = axis2_max;

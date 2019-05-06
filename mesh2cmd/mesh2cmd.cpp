@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
       double axis1 = std::stoi(tokens.at(0));
       double axis2 = std::stoi(tokens.at(1));
       double axis3 = std::stoi(tokens.at(2));
-      std::cout << axis1 - oldAxis1 << '\t' << axis2 - oldAxis2 << '\t' << axis3 - oldAxis3 << '\t' << std::endl;
+      std::cout << axis1 - oldAxis1 << '\t' << axis2 - oldAxis2 << '\t' << axis3 - oldAxis3 << std::endl;
       oldAxis1 = axis1;
       oldAxis2 = axis2;
       oldAxis3 = axis3;
