@@ -62,9 +62,9 @@ int main(int argc, char *argv[])
   double stage_axis1_zero;
   double stage_axis2_zero;
   double stage_axis3_zero;
-  double stage_x_zero = pt.get<int>(session_name + ".actuator_origin_x");
-  double stage_y_zero = pt.get<int>(session_name + ".actuator_origin_y");
-  double stage_z_zero = pt.get<int>(session_name + ".actuator_origin_z");
+  double stage_x_zero = pt.get<double>(session_name + ".actuator_origin_x");
+  double stage_y_zero = pt.get<double>(session_name + ".actuator_origin_y");
+  double stage_z_zero = pt.get<double>(session_name + ".actuator_origin_z");
 
 
   double axis1_min;
