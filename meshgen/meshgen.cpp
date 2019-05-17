@@ -247,16 +247,12 @@ int main(int argc, char *argv[])
   }
 
   Region *region = new FMRegion();
-  std::cout << "#\t3" << std::endl;
-  std::cout << "#\t1" << std::endl;
-  std::cout << "#\t2" << std::endl;
 
   while(axis3_min <= axis3 && axis3 <= axis3_max){
     while(axis2_min <= axis2 && axis2 <= axis2_max){
       while(axis1_min <= axis1 && axis1 <= axis1_max){
         double tempx, tempy, tempz;
         getXYZ(&tempx, &tempy, &tempz, axis1, axis2, axis3, axisOrder);
-
         if(region->isIncluded(tempx,tempy,tempz)){
           if(flag_stage_coordinate == 2){
             double act_3, act_2, act_1;
