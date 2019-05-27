@@ -109,6 +109,10 @@ int main(int argc, char *argv[])
   int sign_y = actuator_sign_y * scan_order_y;
   int sign_z = actuator_sign_z * scan_order_z;
 
+  double actuator_origin_override_X = pt.get<double>(session_name + ".actuator_origin_override_X");
+  double actuator_origin_override_Y = pt.get<double>(session_name + ".actuator_origin_override_Y");
+  double actuator_origin_override_Z = pt.get<double>(session_name + ".actuator_origin_override_Z");
+
   if(sign_x == -1 ){
     x = xmax;
     dx = -dx;

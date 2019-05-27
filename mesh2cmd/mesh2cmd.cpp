@@ -1,7 +1,18 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 #include <boost/algorithm/string.hpp>
+
+template<typename T>
+T getValue(std::string sessionName, std::string propertyName, boost::property_tree::ptree pt){
+  if (boost::optional<T> value = pt.get_optional<T>(sessionName + "." + propertyName)) {
+    return value.get();
+  } else {
+    exit(EXIT_FAILURE);
+  }
+}
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +27,42 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
+  boost::property_tree::ptree pt;
+  boost::property_tree::read_ini("sessions.ini", pt);
+
+  double actuator_origin_x = getValue<double>(argv[1], "actuator_origin_X", pt);
+  double actuator_origin_y = getValue<double>(argv[1], "actuator_origin_Y", pt);
+  double actuator_origin_z = getValue<double>(argv[1], "actuator_origin_Z", pt);
+  std::string axis_order = getValue<std::string>(argv[1], "axis_order", pt);
+
+  std::map<std::string,double> axis_origin_map;
+
+  if(axis_order == "xyz"){
+    axis_origin_map["1"] = actuator_origin_x;
+    axis_origin_map["2"] = actuator_origin_y;
+    axis_origin_map["3"] = actuator_origin_z;
+  }else if(axis_order == "xzy"){
+    axis_origin_map["1"] = actuator_origin_x;
+    axis_origin_map["2"] = actuator_origin_z;
+    axis_origin_map["3"] = actuator_origin_y;
+  }else if(axis_order == "yxz"){
+    axis_origin_map["1"] = actuator_origin_y;
+    axis_origin_map["2"] = actuator_origin_x;
+    axis_origin_map["3"] = actuator_origin_z;
+  }else if(axis_order == "yzx"){
+    axis_origin_map["1"] = actuator_origin_y;
+    axis_origin_map["2"] = actuator_origin_z;
+    axis_origin_map["3"] = actuator_origin_x;
+  }else if(axis_order == "zxy"){
+    axis_origin_map["1"] = actuator_origin_z;
+    axis_origin_map["2"] = actuator_origin_x;
+    axis_origin_map["3"] = actuator_origin_y;
+  }else if(axis_order == "zyx"){
+    axis_origin_map["1"] = actuator_origin_z;
+    axis_origin_map["2"] = actuator_origin_y;
+    axis_origin_map["3"] = actuator_origin_x;
+  }
+
   std::string line;
 
   double oldAxis1 = 0;
@@ -28,11 +75,11 @@ int main(int argc, char *argv[])
 
     if(tokens.at(0) == "#"){
       if(tokens.at(1) == "1")
-        oldAxis1 = 0;
+        oldAxis1 = axis_origin_map["1"];
       else if(tokens.at(1) == "2"){
-        oldAxis2 = 0;
+        oldAxis2 = axis_origin_map["2"];
       }else if(tokens.at(1) == "3"){
-        oldAxis3 = 0;
+        oldAxis3 = axis_origin_map["3"];
       }else{
         std::cerr << "Bad format" << std::endl;
         exit(1);
