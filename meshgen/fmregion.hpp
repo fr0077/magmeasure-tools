@@ -10,11 +10,20 @@ class FMRegion : public Region
     }
 
   private:
+    const double offset_up = 70;
+    const double offset_down = 70;
+
     bool isColide(double x, double y, double z){
-      if(fabs(y) > sqrt(pow(z,2) + pow(x,2)) && fabs(y) > 200)
-        return true;
-      else
-        return false;
+      double r = sqrt(pow(z,2) + pow(x,2));
+
+      if(y >= 0){
+        if(r <= y + offset_up * sqrt(2) && y >= 200 - offset_up)
+          return true;
+      }else{
+        if(r <= fabs(y - offset_down * sqrt(2)) && y <= -200 + offset_down)
+          return true;
+      }
+      return false;
     }
 
     bool isCut(double x, double y, double z){
@@ -26,10 +35,14 @@ class FMRegion : public Region
     }
 
     bool isHidden(double x, double y, double z){
-      if((y > x || y < -x) && z < 0 && abs(y) > 200)
-        return true;
-      else
-        return false;
+      if(y >= 0){
+        if(y - offset_up * sqrt(2) >= fabs(x) && y > 200 - offset_up && z < 0)
+          return true;
+      }else{
+        if(y - offset_down * sqrt(2) <= -fabs(x) && y <= -200 + offset_down && z < 0)
+          return true;
+      }
+      return false;
     }
 
     ~FMRegion(){}

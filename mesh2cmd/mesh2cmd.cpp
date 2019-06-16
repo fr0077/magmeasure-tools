@@ -21,7 +21,8 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  std::ifstream ifs(argv[1]);
+  std::string filename = std::string(argv[1]) + "_actmesh";
+  std::ifstream ifs(filename.c_str());
   if(ifs.fail()){
     std::cerr << "couldn't open file" << std::endl;
     exit(1);
@@ -30,9 +31,9 @@ int main(int argc, char *argv[])
   boost::property_tree::ptree pt;
   boost::property_tree::read_ini("sessions.ini", pt);
 
-  double actuator_origin_x = getValue<double>(argv[1], "actuator_origin_X", pt);
-  double actuator_origin_y = getValue<double>(argv[1], "actuator_origin_Y", pt);
-  double actuator_origin_z = getValue<double>(argv[1], "actuator_origin_Z", pt);
+  double actuator_origin_x = getValue<double>(argv[1], "actuator_origin_override_X", pt);
+  double actuator_origin_y = getValue<double>(argv[1], "actuator_origin_override_Y", pt);
+  double actuator_origin_z = getValue<double>(argv[1], "actuator_origin_override_Z", pt);
   std::string axis_order = getValue<std::string>(argv[1], "axis_order", pt);
 
   std::map<std::string,double> axis_origin_map;
@@ -65,9 +66,9 @@ int main(int argc, char *argv[])
 
   std::string line;
 
-  double oldAxis1 = 0;
-  double oldAxis2 = 0;
-  double oldAxis3 = 0;
+  double oldAxis1 = axis_origin_map["1"];
+  double oldAxis2 = axis_origin_map["2"];
+  double oldAxis3 = axis_origin_map["3"];
 
   while(std::getline(ifs, line)){
     std::vector<std::string> tokens;

@@ -62,9 +62,9 @@ int main(int argc, char *argv[])
   double stage_axis1_zero;
   double stage_axis2_zero;
   double stage_axis3_zero;
-  double stage_x_zero = pt.get<double>(session_name + ".actuator_origin_x");
-  double stage_y_zero = pt.get<double>(session_name + ".actuator_origin_y");
-  double stage_z_zero = pt.get<double>(session_name + ".actuator_origin_z");
+  double stage_x_zero = pt.get<double>(session_name + ".actuator_origin_x") - pt.get<double>(session_name + ".actuator_origin_override_X");
+  double stage_y_zero = pt.get<double>(session_name + ".actuator_origin_y") - pt.get<double>(session_name + ".actuator_origin_override_Y");
+  double stage_z_zero = pt.get<double>(session_name + ".actuator_origin_z") - pt.get<double>(session_name + ".actuator_origin_override_Z");
 
 
   double axis1_min;
@@ -108,10 +108,6 @@ int main(int argc, char *argv[])
   int sign_x = actuator_sign_x * scan_order_x;
   int sign_y = actuator_sign_y * scan_order_y;
   int sign_z = actuator_sign_z * scan_order_z;
-
-  double actuator_origin_override_X = pt.get<double>(session_name + ".actuator_origin_override_X");
-  double actuator_origin_override_Y = pt.get<double>(session_name + ".actuator_origin_override_Y");
-  double actuator_origin_override_Z = pt.get<double>(session_name + ".actuator_origin_override_Z");
 
   if(sign_x == -1 ){
     x = xmax;
